@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — Insight</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Wrapper ── */
+    .wrapper {
+      width: 100%;
+      max-width: 420px;
+      padding: 48px 28px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Logo ── */
+    .logo {
+      margin-bottom: 30px;
+    }
+    .logo img {
+      width: 165px;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* ── Heading ── */
+    .welcome {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a1a1a;
+      text-align: center;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #888;
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 400;
+    }
+
+    /* ── Form ── */
+    .form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .input-group {
+      position: relative;
+      width: 100%;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #e8e8e8;
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: 'Poppins', sans-serif;
+      color: #1a1a1a;
+      background: #fafafa;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      outline: none;
+    }
+
+    .input-group input:focus {
+      border-color: #8A4FF7;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(138, 79, 247, 0.1);
+    }
+
+    .input-group input::placeholder {
+      color: #c0c0c0;
+    }
+
+    /* Password field right-padding for eye icon */
+    #passwordInput {
+      padding-right: 48px;
+    }
+
+    /* ── Password toggle ── */
+    .toggle-pw {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #c0c0c0;
+      font-size: 19px;
+      line-height: 1;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+    }
+    .toggle-pw:hover { color: #8A4FF7; }
+
+    /* ── Error message ── */
+    .error-msg {
+      display: none;
+      color: #d63b3b;
+      font-size: 13px;
+      text-align: center;
+      padding: 10px 14px;
+      background: #fff5f5;
+      border: 1.5px solid #ffd0d0;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    /* ── Login button ── */
+    .login-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(to right, #6C3EF4, #8A4FF7, #A65CF8);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.15s ease;
+      margin-top: 2px;
+      position: relative;
+      letter-spacing: 0.2px;
+    }
+
+    .login-btn:hover:not(:disabled) {
+      opacity: 0.91;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(108, 62, 244, 0.3);
+    }
+
+    .login-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    /* Loading spinner inside button */
+    .login-btn.loading { color: transparent; }
+
+    .login-btn.loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 22px;
+      height: 22px;
+      border: 3px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* ── Sign up link ── */
+    .signup-text {
+      font-size: 14px;
+      color: #888;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .signup-text a {
+      color: #8A4FF7;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+
+    .signup-text a:hover { opacity: 0.8; text-decoration: underline; }
+
+    /* ── Illustration ── */
+    .illustration {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      justify-content: center;
+      margin-top: 18px;
+    }
+
+    .illustration img {
+      width: 270px;
+      max-width: 85%;
+      object-fit: contain;
+      display: block;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 480px) {
+      .wrapper       { padding: 36px 20px 0; }
+      .welcome       { font-size: 23px; }
+      .logo img      { width: 145px; }
+      .illustration img { width: 220px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ Main wrapper ══ -->
+  <div class="wrapper">
+
+    <!-- Logo -->
+    <div class="logo">
+      <img
+        src="https://i.ibb.co.com/1fKZGC7X/file-0000000003c87208ad00b615126c723f-1-removebg-preview.png"
+        alt="Insight Logo"
+        draggable="false"
+      />
+    </div>
+
+    <!-- Heading -->
+    <h1 class="welcome">Welcome back! 👋</h1>
+    <p class="subtitle">Log in to continue your journey</p>
+
+    <!-- Form -->
+    <div class="form">
+
+      <div class="input-group">
+        <input
+          type="email"
+          id="emailInput"
+          placeholder="Email"
+          autocomplete="email"
+          inputmode="email"
+        />
+      </div>
+
+      <div class="input-group">
+        <input
+          type="password"
+          id="passwordInput"
+          placeholder="Password"
+          autocomplete="current-password"
+        />
+        <button class="toggle-pw" id="togglePw" type="button" aria-label="Toggle password visibility">
+          👁
+        </button>
+      </div>
+
+      <!-- Error -->
+      <div class="error-msg" id="errorMsg"></div>
+
+      <!-- Login button -->
+      <button class="login-btn" id="loginBtn">Log In</button>
+
+    </div>
+
+    <!-- Sign up -->
+    <p class="signup-text">
+      Don't have an account? <a href="signup.html">Sign up</a>
+    </p>
+
+  </div>
+
+  <!-- Illustration -->
+  <div class="illustration">
+    <img
+      src="https://i.ibb.co.com/DyV9tDW/file-00000000dfb871faa658852ecbb02a4b-1-removebg-preview.png"
+      alt="Illustration"
+      draggable="false"
+    />
+  </div>
+
+
+  <!-- ══ Firebase Logic ══ -->
+  <script type="module">
+    import { auth } from "./config.js";
+    import {
+      signInWithEmailAndPassword,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+    const emailInput    = document.getElementById("emailInput");
+    const passwordInput = document.getElementById("passwordInput");
+    const loginBtn      = document.getElementById("loginBtn");
+    const errorMsg      = document.getElementById("errorMsg");
+    const togglePw      = document.getElementById("togglePw");
+
+    // ── Already logged in → redirect ────────────────────────
+    onAuthStateChanged(auth, (user) => {
+      if (user) window.location.href = "index.html";
+    });
+
+    // ── Password show / hide ─────────────────────────────────
+    togglePw.addEventListener("click", () => {
+      const hidden = passwordInput.type === "password";
+      passwordInput.type  = hidden ? "text" : "password";
+      togglePw.textContent = hidden ? "🙈" : "👁";
+    });
+
+    // ── Error helpers ────────────────────────────────────────
+    function showError(msg) {
+      errorMsg.textContent  = msg;
+      errorMsg.style.display = "block";
+    }
+    function clearError() {
+      errorMsg.textContent  = "";
+      errorMsg.style.display = "none";
+    }
+
+    // Firebase error code → readable message
+    function friendlyError(code) {
+      const map = {
+        "auth/invalid-email":          "Please enter a valid email address.",
+        "auth/user-not-found":         "No account found with this email.",
+        "auth/wrong-password":         "Incorrect password. Please try again.",
+        "auth/invalid-credential":     "Incorrect email or password.",
+        "auth/too-many-requests":      "Too many attempts. Please try again later.",
+        "auth/network-request-failed": "Network error. Check your connection.",
+        "auth/user-disabled":          "This account has been disabled."
+      };
+      return map[code] || "Login failed. Please try again.";
+    }
+
+    // ── Login handler ────────────────────────────────────────
+    async function handleLogin() {
+      clearError();
+
+      const email    = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email)    { showError("Please enter your email.");    return; }
+      if (!password) { showError("Please enter your password."); return; }
+
+      // Loading state
+      loginBtn.classList.add("loading");
+      loginBtn.disabled = true;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = "index.html";
+      } catch (err) {
+        showError(friendlyError(err.code));
+        loginBtn.classList.remove("loading");
+        loginBtn.disabled = false;
+      }
+    }
+
+    // ── Button click ─────────────────────────────────────────
+    loginBtn.addEventListener("click", handleLogin);
+
+    // ── Enter key ────────────────────────────────────────────
+    [emailInput, passwordInput].forEach((el) => {
+      el.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") handleLogin();
+      });
+    });
+
+    // ── Clear error on input ─────────────────────────────────
+    [emailInput, passwordInput].forEach((el) => {
+      el.addEventListener("input", clearError);
+    });
+  </script>
+
+</body>
+</html>
